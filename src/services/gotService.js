@@ -12,26 +12,61 @@ export default class GotService {
     
         return await res.json();
     };
-    getAllCharacters() {
-        return this.getResourse('/characters?page=5&pageSize=10');
+    async getAllCharacters() {
+        const res = await this.getResourse('/characters?page=5&pageSize=10');
+        return res.map(this._transformCharacter);
     };
-    getCharater(id) {
-        return this.getResourse(`/characters/${id}`);
-    };
-
-    getAllBooks() {
-        return this.getResourse('/books');
-    };
-    getBook(id) {
-        return this.getResourse(`/books/${id}`);
+    async getCharater(id) {
+        const character =await this.getResourse(`/characters/${id}`);
+        return this._transformCharacter(character);
     };
 
-    getAllHouses() {
-        return this.getResourse('/houses?page=5&pageSize=10');
+    async getAllBooks() {
+        const books = await this.getResourse('/books');
+        return books.map(this._transformBook);
     };
-    getHous(id) {
-        return this.getResourse(`/houses/${id}`);
+    async getBook(id) {
+        const book = await this.getResourse(`/books/${id}`);
+        return this._transformBook(book);
+    };
+
+    async getAllHouses() {
+        const houses = await this.getResourse('/houses?page=5&pageSize=10');
+        return houses.map(this._transformHouse);
+    };
+    async getHous(id) {
+        const hous = await this.getResourse(`/houses/${id}`);
+        return this._transformHouse(hous);
+    }
+
+    _transformCharacter(char) {
+        return {
+            name: char.name,
+            gender: char.gender,
+            born: char.born,
+            died: char.died,
+            culture: char.culture
+        }
+    }
+
+    _transformHouse(house) {
+        return {
+            name: house.name,
+            region: house.region,
+            words: house.words,
+            titles: house.titles,
+            overlord: house.overlord,
+            ancestralWeapons: house.ancestralWeapons
+        }
+    }
+
+    _transformBook(book) {
+        return {
+            name: book.name,
+            numberOfPage: book.numberOfPage,
+            publiser: book.publiser,
+            released: book.released
+        }
     }
 }
 
-const got = new GotService();
