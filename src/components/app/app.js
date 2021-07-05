@@ -1,35 +1,62 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {Col, Row, Container} from 'reactstrap';
 import Header from '../header';
 import RandomChar from '../randomChar';
-import ItemList from '../itemList';
-import CharDetails from '../charDetails';
 import GotService from '../../services/gotService';
+import './app.css';
+import ErrorMessage from '../errorMessage';
+import CharacterPage from '../characterPage';
 
+export default class App extends Component{
+    state = {
+        showRandomeChar: true,
+        error: false,
+        selectChar: 130
+    }
 
-const App = () => {
-    return (
-        <> 
+    componentDidCatch() {
+        this.setState({
+            error: true
+        })
+    }
+
+    toggleRandomChar = () => {
+        this.setState((state) => {
+            return {
+                showRandomeChar: !state.showRandomeChar
+            }
+        });
+    };
+
+    onCharSelected = (id) =>{
+        this.setState({
+            selectChar: id
+        })
+    }
+
+    render() {
+        if (this.state.error) {
+            return <ErrorMessage/>
+        }
+        const char = this.state.showRandomeChar ? <RandomChar/> : null;
+        return(
+            <> 
             <Container>
                 <Header />
             </Container>
             <Container>
                 <Row>
                     <Col lg={{size: 5, offset: 0}}>
-                        <RandomChar/>
+                        {char}
+                        <button className='toggle-btn'
+                        onClick={this.toggleRandomChar}>Toggle random character</button>
                     </Col>
                 </Row>
-                <Row>
-                    <Col md='6'>
-                        <ItemList />
-                    </Col>
-                    <Col md='6'>
-                        <CharDetails />
-                    </Col>
-                </Row>
+                <CharacterPage/>
             </Container>
         </>
-    );
-};
+        )
+    }
+}
 
-export default App;
+
